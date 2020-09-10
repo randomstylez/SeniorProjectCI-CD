@@ -1,0 +1,73 @@
+image: python:3.7
+
+stages:
+   - build
+   - testing
+   - security
+   
+python-setup:
+   stage: build
+   script:
+     - git clone https://github.com/amlight/Services-Status.git
+     - cd Services-Status
+     - pip install -r requirements.txt
+    
+flake8:
+    stage: testing
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install flake8
+      - flake8 || true
+    after_script:
+      - echo "Flake8 is done testing."
+     
+pylint:
+    stage: testing
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install pylint
+      - pylint --exit-zero --output-format=parseable *.py **/*.py
+    after_script:
+      - echo "Pylint is done testing."
+      
+pyflakes:
+    stage: testing
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install pyflakes
+      - pyflakes . || true
+    after_script:
+      - echo "Pyflakes is done testing"
+      
+bandit:
+    stage: security
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install bandit
+      - bandit -r -ll . 
+    after_script:
+      - echo "Bandit is done testing"
+      
+pyt:
+    stage: security
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install python-taint
+      - pyt -r . || true
+    after_script:
+      - echo "Pyt is done testing"
+      
+safety:
+    stage: security
+    script:
+      - git clone https://github.com/amlight/Services-Status.git
+      - cd Services-Status
+      - pip install safety
+      - safety check || true
+    after_script:
+      - echo "Safety is done testing"
